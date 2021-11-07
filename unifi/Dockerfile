@@ -10,21 +10,12 @@ ARG BUILD_ARCH=amd64
 RUN \
     apt-get update \
     && apt-get install -y --no-install-recommends \
-        gnupg2=2.2.4-1ubuntu1.4 \
-    \
-    && curl -fsSL "https://www.mongodb.org/static/pgp/server-3.4.asc" \
-        | apt-key add -\
-    && echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
-        > /etc/apt/sources.list.d/mongodb.list \
-    \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
         binutils=2.30-21ubuntu1~18.04.7 \
         jsvc=1.0.15-8 \
         libcap2=1:2.25-1.2 \
         libssl1.0.0=1.0.2n-1ubuntu5.7 \
         logrotate=3.11.0-0.1ubuntu1 \
-        mongodb-org-server=3.4.24 \
+        mongodb-server=1:3.6.3-0ubuntu1.4 \
         openjdk-8-jdk-headless=8u292-b10-0ubuntu1~18.04 \
     \
     && curl -J -L -o /tmp/unifi.deb \
@@ -32,13 +23,9 @@ RUN \
     \
     && dpkg --install /tmp/unifi.deb \
     \
-    && apt-get remove -y --purge \
-        gnupg2 \
-    \
     && apt-get clean \
     && rm -fr \
         /tmp/* \
-        /root/.gnupg \
         /var/{cache,log}/* \
         /var/lib/apt/lists/*
 
