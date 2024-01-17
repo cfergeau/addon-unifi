@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:8.2.0
+ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:9.0.2
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -10,10 +10,8 @@ RUN \
     apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-        binutils=2.34-6ubuntu1.8 \
-        libcap2=1:2.32-1ubuntu0.1 \
-        logrotate=3.14.0-4ubuntu3 \
-        mongodb-server=1:3.6.9+really3.6.8+90~g8e540c0b6d-0ubuntu5.3 \
+        binutils=2.38-4ubuntu2.5 \
+        logrotate=3.19.0-1ubuntu1.1 \
         openjdk-17-jre-headless=17* \
     \
     && curl -J -L -o /tmp/unifi.deb \
