@@ -2,6 +2,8 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:9.0.3
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
+ARG BUILD_ARCH=amd64
+
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -18,13 +20,22 @@ RUN \
         logrotate=3.19.0-1ubuntu1.1 \
         openjdk-17-jre-headless=17*
 
+RUN \
+    pkgname=libssl1.1_1.1.1f-1ubuntu2.21
+    curl -L -O "http://security.ubuntu.com/ubuntu/pool/main/o/openssl/${pkgname}_amd64.deb" \
+    && curl -L -O "http://ports.ubuntu.com/pool/main/o/openssl/${pkgname}_arm64.deb" \
+    && if [[ "${BUILD_ARCH}" = "aarch64" ]]; then ARCH="arm64"; fi \
+    && if [[ "${BUILD_ARCH}" = "amd64" ]]; then ARCH="amd64"; fi \
+    && dpkg -i ${pkgname}_${ARCH}.deb \
+    && rm -f ${pkgname}*
+
 # install mongodb-org-server. Only the 6.0 and 7.0 repositories contain 'mongodb-org-server' packages
 # beware of the licence change, previous mongodb version was 3.6.9 released under the AGPL, 7.0 is released under the non-free SSPL
 # https://en.wikipedia.org/wiki/MongoDB#Licensing
 # hadolint ignore=DL3008, DL3009
 RUN \
-    curl -J -L -o /usr/share/keyrings/mongodb-server-7.0.gpg https://pgp.mongodb.com/server-7.0.pub \
-    && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" >/etc/apt/sources.list.d/mongodb-org-7.0.list \
+    curl -J -L -o /etc/apt/keyrings/mongodb-server-4.4.gpg https://pgp.mongodb.com/server-4.4.pub \
+    && echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" >/etc/apt/sources.list.d/mongodb-org-4.4.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends mongodb-org-server
 
@@ -32,7 +43,7 @@ RUN \
 RUN \
     && curl -J -L -o /tmp/unifi.deb \
         "https://dl.ui.com/unifi/8.0.28/unifi_sysvinit_all.deb" \
-    && dpkg -i --ignore-depends=mongodb-org-server /tmp/unifi.deb
+    && dpkg -i /tmp/unifi.deb
 
 RUN \
     apt-get clean \
@@ -51,7 +62,6 @@ HEALTHCHECK --start-period=5m \
     CMD curl --insecure --fail https://localhost:8443 || exit 1
 
 # Build arguments
-ARG BUILD_ARCH
 ARG BUILD_DATE
 ARG BUILD_DESCRIPTION
 ARG BUILD_NAME
