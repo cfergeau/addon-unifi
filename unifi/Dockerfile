@@ -12,13 +12,25 @@ RUN \
     && apt-get install -y --no-install-recommends \
         binutils=2.38-4ubuntu2.5 \
         logrotate=3.19.0-1ubuntu1.1 \
-        openjdk-17-jre-headless=17* \
-    \
+        openjdk-17-jre-headless=17*
+
+# install mongodb-org-server. Only the 6.0 and 7.0 repositories contain 'mongodb-org-server' packages
+# beware of the licence change, previous mongodb version was 3.6.9 released under the AGPL, 7.0 is released under the non-free SSPL
+# https://en.wikipedia.org/wiki/MongoDB#Licensing
+RUN \
+    curl -J -L -o /usr/share/keyrings/mongodb-server-7.0.gpg https://pgp.mongodb.com/server-7.0.pub \
+    && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" >/etc/apt/sources.list.d/mongodb-org-7.0.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends mongodb-org-server
+
+# need to ignore the mongodb-org-server dependency the unifi package requires 5.x or older, and we installed 7.x
+RUN \
     && curl -J -L -o /tmp/unifi.deb \
         "https://dl.ui.com/unifi/8.0.28/unifi_sysvinit_all.deb" \
-    \
-    && dpkg --install /tmp/unifi.deb \
-    && apt-get clean \
+    && dpkg -i --ignore-depends=mongodb-org-server /tmp/unifi.deb
+
+RUN \
+    apt-get clean \
     && rm -fr \
         /tmp/* \
         /var/cache/* \
