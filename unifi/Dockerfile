@@ -37,7 +37,7 @@ RUN \
     curl -J -L -o /etc/apt/keyrings/mongodb-server-4.4.gpg https://pgp.mongodb.com/server-4.4.pub \
     && echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" >/etc/apt/sources.list.d/mongodb-org-4.4.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends mongodb-org-server
+    && apt-get install -y --no-install-recommends mongodb-org-server=4.4.14  mongodb-org-tools   mongodb-database-tools  mongodb-org-database-tools-extra  mongodb-org-shell
 
 # need to ignore the mongodb-org-server dependency the unifi package requires 5.x or older, and we installed 7.x
 RUN \
