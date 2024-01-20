@@ -10,7 +10,10 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN \
     apt-get update \
     && apt-get upgrade -y \
+    && apt-cache show binutils \
+    && apt-cache show logrotate \
     && apt-get install -y --no-install-recommends \
+        libc-bin=2.35-0ubuntu3.6 \
         binutils=2.38-4ubuntu2.5 \
         logrotate=3.19.0-1ubuntu1.1 \
         openjdk-17-jre-headless=17*
