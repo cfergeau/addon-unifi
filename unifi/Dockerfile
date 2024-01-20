@@ -6,6 +6,7 @@ FROM ${BUILD_FROM}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Setup base system
+# hadolint ignore=DL3009
 RUN \
     apt-get update \
     && apt-get upgrade -y \
@@ -17,6 +18,7 @@ RUN \
 # install mongodb-org-server. Only the 6.0 and 7.0 repositories contain 'mongodb-org-server' packages
 # beware of the licence change, previous mongodb version was 3.6.9 released under the AGPL, 7.0 is released under the non-free SSPL
 # https://en.wikipedia.org/wiki/MongoDB#Licensing
+# hadolint ignore=DL3008, DL3009
 RUN \
     curl -J -L -o /usr/share/keyrings/mongodb-server-7.0.gpg https://pgp.mongodb.com/server-7.0.pub \
     && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" >/etc/apt/sources.list.d/mongodb-org-7.0.list \
