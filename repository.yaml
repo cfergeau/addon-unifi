@@ -1,0 +1,4 @@
+---
+name: Test Unifi repository
+url: 'https://github.com/cfergeau/addon-unifi'
+maintainer: Christophe Fergeau <spam at fergeau.eu>

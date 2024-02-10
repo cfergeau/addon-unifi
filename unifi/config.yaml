@@ -3,7 +3,7 @@ name: UniFi Network Application
 version: dev
 slug: unifi
 description: Manage your UniFi network using a web browser
-url: https://github.com/hassio-addons/addon-unifi
+url: https://github.com/cfergeau/addon-unifi
 codenotary: codenotary@frenck.dev
 webui: https://[HOST]:[PORT:8443]
 startup: services
@@ -41,3 +41,4 @@ schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)?
   memory_max: int?
   memory_init: int?
+image: "ghcr.io/cfergeau/unifi/{arch}"
